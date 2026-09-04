@@ -1,4 +1,4 @@
-﻿import re
+import re
 from typing import Optional, List
 from pydantic import BaseModel, Field, field_validator
 from datetime import datetime
@@ -44,3 +44,35 @@ class TriageRequest(BaseModel):
     hasElderlyOrInfant: bool
     hasMedicalCondition: bool
     description: str = ''
+
+class ShelterCreate(BaseModel):
+    name: str = Field(..., min_length=3, max_length=150, description='Name of shelter, temple, or school')
+    district: str = Field(..., min_length=2, description='Sri Lankan administrative district')
+    division: str = Field(..., min_length=2, description='Grama Niladhari division or town')
+    address: str = Field(..., min_length=3, description='Detailed location, road, or landmark')
+    capacity: int = Field(..., ge=1, le=10000, description='Total safe lodging capacity')
+    currentOccupancy: int = Field(default=0, ge=0, description='Current number of displaced persons housed')
+    contactPerson: str = Field(..., min_length=2, description='Camp coordinator, GN officer, or person in charge')
+    contactPhone: str = Field(..., description='Sri Lankan contact phone number')
+    status: Optional[str] = Field(default='Available', description='Camp status: Available, Nearly Full, Full')
+    facilities: List[str] = Field(default_factory=list, description='Available on-site facilities')
+    neededItems: List[str] = Field(default_factory=list, description='Urgent supplies needed')
+
+    @field_validator('contactPhone')
+    @classmethod
+    def validate_phone(cls, v: str) -> str:
+        cleaned = re.sub(r'[\s\-()]', '', v)
+        if not re.match(SL_PHONE_REGEX, cleaned):
+            raise ValueError('Must be a valid Sri Lankan mobile or landline number (e.g., 0771234567 or +94771234567)')
+        return cleaned
+
+    @field_validator('status')
+    @classmethod
+    def validate_status(cls, v: Optional[str]) -> str:
+        if not v:
+            return 'Available'
+        allowed = ['Available', 'Nearly Full', 'Full']
+        if v not in allowed:
+            return 'Available'
+        return v
+

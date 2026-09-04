@@ -1,5 +1,5 @@
-﻿import React, { useState } from 'react';
-import { Waves, AlertTriangle, ShieldCheck, Home, Activity, Menu, X, Sparkles, Info } from 'lucide-react';
+import React, { useState } from 'react';
+import { Waves, AlertTriangle, ShieldCheck, Home, Activity, Menu, X, Sparkles, Info, Building2 } from 'lucide-react';
 
 export default function Navbar({ activeTab, setActiveTab, onOpenProblemModal }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -9,6 +9,7 @@ export default function Navbar({ activeTab, setActiveTab, onOpenProblemModal }) 
     { id: 'gauges', label: 'River Gauges', icon: Waves },
     { id: 'sos-board', label: 'SOS Dispatch Board', icon: Activity },
     { id: 'shelters', label: 'Relief Shelters', icon: ShieldCheck },
+    { id: 'shelter-form', label: 'Register Camp', icon: Building2 },
     { id: 'ai-triage', label: 'AI Triage Evaluator', icon: Sparkles },
     { id: 'sos-form', label: 'Request Evacuation', icon: AlertTriangle, highlight: true },
   ];

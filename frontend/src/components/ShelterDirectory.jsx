@@ -1,7 +1,7 @@
-﻿import React, { useState } from 'react';
-import { ShieldCheck, Search, Phone, MapPin, Users, PackageOpen, Check } from 'lucide-react';
+import React, { useState } from 'react';
+import { ShieldCheck, Search, Phone, MapPin, Users, PackageOpen, Check, Plus } from 'lucide-react';
 
-export default function ShelterDirectory({ shelters, summary }) {
+export default function ShelterDirectory({ shelters, summary, onNavigateToRegister }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [districtFilter, setDistrictFilter] = useState('ALL');
   const [statusFilter, setStatusFilter] = useState('ALL');
@@ -33,7 +33,7 @@ export default function ShelterDirectory({ shelters, summary }) {
     <div className="space-y-6">
       
       {/* Top Banner / Summary */}
-      <div className="bg-gradient-to-r from-sky-800 to-blue-900 rounded-2xl p-6 text-white shadow-md">
+      <div className="bg-gradient-to-r from-sky-800 to-blue-900 rounded-3xl p-6 sm:p-8 text-white shadow-md">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
           <div>
             <div className="flex items-center gap-2 mb-2">
@@ -42,24 +42,36 @@ export default function ShelterDirectory({ shelters, summary }) {
                 Community Emergency Relief Shelters & Safe Havens
               </h2>
             </div>
-            <p className="text-xs sm:text-sm text-sky-100 max-w-2xl">
+            <p className="text-xs sm:text-sm text-sky-100 max-w-2xl leading-relaxed">
               Designated temples, schools, and community centers equipped with safe lodging, food distribution, and medical care in flood-affected districts.
             </p>
           </div>
 
-          {/* Aggregate Calculation Cards */}
-          <div className="flex flex-wrap items-center gap-3 text-slate-900">
-            <div className="bg-white/95 backdrop-blur rounded-xl p-3 px-4 text-center min-w-[110px]">
-              <span className="text-[10px] uppercase font-bold text-slate-500 block">Total Shelters</span>
-              <span className="text-2xl font-black text-slate-900">{summary.totalShelters || shelters.length}</span>
-            </div>
-            <div className="bg-white/95 backdrop-blur rounded-xl p-3 px-4 text-center min-w-[110px]">
-              <span className="text-[10px] uppercase font-bold text-slate-500 block">Total Capacity</span>
-              <span className="text-2xl font-black text-slate-900">{summary.totalCapacity || 0}</span>
-            </div>
-            <div className="bg-white/95 backdrop-blur rounded-xl p-3 px-4 text-center min-w-[110px]">
-              <span className="text-[10px] uppercase font-bold text-slate-500 block">Available Spaces</span>
-              <span className="text-2xl font-black text-emerald-600">{summary.availableSpaces || 0}</span>
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+            {onNavigateToRegister && (
+              <button
+                onClick={onNavigateToRegister}
+                className="bg-white hover:bg-sky-50 text-sky-950 font-bold px-4 py-2.5 rounded-xl text-xs sm:text-sm shadow-md transition-all flex items-center justify-center gap-2 flex-shrink-0"
+              >
+                <Plus className="w-4 h-4 text-sky-700" />
+                Register New Camp
+              </button>
+            )}
+
+            {/* Aggregate Calculation Cards */}
+            <div className="flex flex-wrap items-center gap-3 text-slate-900">
+              <div className="bg-white/95 backdrop-blur rounded-xl p-3 px-4 text-center min-w-[100px]">
+                <span className="text-[10px] uppercase font-bold text-slate-500 block">Total Shelters</span>
+                <span className="text-2xl font-black text-slate-900">{summary.totalShelters || shelters.length}</span>
+              </div>
+              <div className="bg-white/95 backdrop-blur rounded-xl p-3 px-4 text-center min-w-[100px]">
+                <span className="text-[10px] uppercase font-bold text-slate-500 block">Total Capacity</span>
+                <span className="text-2xl font-black text-slate-900">{summary.totalCapacity || 0}</span>
+              </div>
+              <div className="bg-white/95 backdrop-blur rounded-xl p-3 px-4 text-center min-w-[100px]">
+                <span className="text-[10px] uppercase font-bold text-slate-500 block">Available Beds</span>
+                <span className="text-2xl font-black text-emerald-600">{summary.availableSpaces || 0}</span>
+              </div>
             </div>
           </div>
         </div>

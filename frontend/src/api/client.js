@@ -284,6 +284,12 @@ export async function getShelters(params = {}) {
     return res.data;
   } catch (err) {
     console.warn('API connection failed, using local fallback:', err.message);
+    const local = localStorage.getItem('resq_shelters');
+    if (local) {
+      try {
+        return JSON.parse(local);
+      } catch (e) {}
+    }
     return [
       {
         id: 'shelter-1',
@@ -357,6 +363,34 @@ export async function getShelterSummary() {
       availableSpaces: 520,
       occupancyPercentage: 60.0
     };
+  }
+}
+
+export async function submitShelter(formData) {
+  try {
+    const res = await api.post('/shelters', formData);
+    return res.data;
+  } catch (err) {
+    console.warn('Backend shelter creation failed, using local persistence:', err.message);
+    const occ = Number(formData.currentOccupancy || 0);
+    const cap = Math.max(1, Number(formData.capacity || 1));
+    const ratio = occ / cap;
+    const calcStatus = ratio >= 1.0 ? 'Full' : ratio >= 0.8 ? 'Nearly Full' : 'Available';
+
+    const newRecord = {
+      ...formData,
+      id: 'shelter-' + Math.random().toString(36).substring(2, 8),
+      capacity: cap,
+      currentOccupancy: occ,
+      status: formData.status || calcStatus,
+      facilities: formData.facilities || [],
+      neededItems: formData.neededItems || []
+    };
+
+    const existing = await getShelters();
+    const updated = [newRecord, ...existing];
+    localStorage.setItem('resq_shelters', JSON.stringify(updated));
+    return newRecord;
   }
 }
 

@@ -5,6 +5,7 @@ import ProblemModal from './components/ProblemModal';
 import MetricsOverview from './components/MetricsOverview';
 import RiverGaugesView from './components/RiverGaugesView';
 import ShelterDirectory from './components/ShelterDirectory';
+import RegisterShelterForm from './components/RegisterShelterForm';
 import EmergencyRequestForm from './components/EmergencyRequestForm';
 import SOSDispatchBoard from './components/SOSDispatchBoard';
 import AITriageAssistant from './components/AITriageAssistant';
@@ -77,6 +78,12 @@ export default function App() {
     setRequests((prev) => [newRequest, ...prev]);
     // Refresh metrics
     getSOSMetrics().then(setMetrics);
+  };
+
+  const handleShelterSubmitted = (newShelter) => {
+    setShelters((prev) => [newShelter, ...prev]);
+    // Refresh shelter summary
+    getShelterSummary().then(setShelterSummary);
   };
 
   const handleStatusChanged = (id, newStatus) => {
@@ -321,6 +328,7 @@ export default function App() {
             <ShelterDirectory
               shelters={shelters}
               summary={shelterSummary}
+              onNavigateToRegister={() => setActiveTab('shelter-form')}
             />
           </div>
         )}
@@ -338,6 +346,16 @@ export default function App() {
             <EmergencyRequestForm
               onRequestSubmitted={handleRequestSubmitted}
               onNavigateToBoard={() => setActiveTab('sos-board')}
+            />
+          </div>
+        )}
+
+        {/* TAB 7: REGISTER RELIEF SHELTER FORM */}
+        {activeTab === 'shelter-form' && (
+          <div className="animate-in fade-in duration-200">
+            <RegisterShelterForm
+              onShelterRegistered={handleShelterSubmitted}
+              onNavigateToDirectory={() => setActiveTab('shelters')}
             />
           </div>
         )}

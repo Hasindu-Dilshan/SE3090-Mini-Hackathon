@@ -1,6 +1,8 @@
-from fastapi import APIRouter
+import uuid
+from fastapi import APIRouter, status
 from typing import Optional, List
 from database import db_manager
+from models import ShelterCreate
 
 router = APIRouter(prefix='/api/shelters', tags=['Relief Shelters'])
 
@@ -42,6 +44,35 @@ def get_shelters(
         ]
     return filtered
 
+@router.post('', status_code=status.HTTP_201_CREATED)
+@router.post('/', status_code=status.HTTP_201_CREATED)
+def create_shelter(shelter: ShelterCreate):
+    """
+    Registers a new community relief shelter / safe haven camp in the system.
+    """
+    record = shelter.model_dump()
+    record['id'] = f'shelter-{uuid.uuid4().hex[:6]}'
+    
+    # Auto-calculate status based on occupancy
+    occ = record.get('currentOccupancy', 0)
+    cap = max(1, record.get('capacity', 1))
+    ratio = occ / cap
+    if ratio >= 1.0:
+        record['status'] = 'Full'
+    elif ratio >= 0.8:
+        record['status'] = 'Nearly Full'
+    else:
+        record['status'] = 'Available'
+
+    col = db_manager.get_collection('shelters')
+    if col is not None:
+        col.insert_one(dict(record))
+        record.pop('_id', None)
+    else:
+        db_manager.memory_store['shelters'].append(record)
+
+    return record
+
 @router.get('/summary')
 def get_shelter_summary():
     shelters = get_shelters(search=None, district=None, status=None)
@@ -57,3 +88,4 @@ def get_shelter_summary():
         'availableSpaces': available_spaces,
         'occupancyPercentage': occupancy_rate
     }
+
