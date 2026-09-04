@@ -1,0 +1,11 @@
+{
+  "name": "resq-lanka-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "ResQ Lanka - Real-Time Disaster Response & Flood Dispatch Coordination Platform",
+  "scripts": {
+    "build": "npm --prefix frontend run build",
+    "install-frontend": "npm --prefix frontend install",
+    "dev": "npm --prefix frontend run dev"
+  }
+}

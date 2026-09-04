@@ -14,6 +14,9 @@ const api = axios.create({
 export async function getRiverGauges(params = {}) {
   try {
     const res = await api.get('/gauges', { params });
+    if (!Array.isArray(res.data)) {
+      throw new Error('Expected array from /gauges');
+    }
     return res.data;
   } catch (err) {
     console.warn('API connection failed, using local offline fallback:', err.message);
@@ -118,6 +121,9 @@ export async function getRiverGauges(params = {}) {
 export async function getLiveSriLankaRiverGauges(params = {}) {
   try {
     const res = await api.get('/gauges/live', { params });
+    if (!Array.isArray(res.data)) {
+      throw new Error('Expected array from /gauges/live');
+    }
     return res.data;
   } catch (err) {
     console.warn('Backend live gauge route failed, attempting direct Sri Lanka river monitor query:', err.message);
@@ -281,6 +287,9 @@ export async function getLiveSriLankaRiverGauges(params = {}) {
 export async function getShelters(params = {}) {
   try {
     const res = await api.get('/shelters', { params });
+    if (!Array.isArray(res.data)) {
+      throw new Error('Expected array from /shelters');
+    }
     return res.data;
   } catch (err) {
     console.warn('API connection failed, using local fallback:', err.message);
@@ -354,6 +363,9 @@ export async function getShelters(params = {}) {
 export async function getShelterSummary() {
   try {
     const res = await api.get('/shelters/summary');
+    if (!res.data || typeof res.data !== 'object' || !('totalShelters' in res.data)) {
+      throw new Error('Expected summary object from /shelters/summary');
+    }
     return res.data;
   } catch (err) {
     return {
@@ -369,6 +381,9 @@ export async function getShelterSummary() {
 export async function submitShelter(formData) {
   try {
     const res = await api.post('/shelters', formData);
+    if (!res.data || typeof res.data !== 'object' || !res.data.id) {
+      throw new Error('Expected shelter record from /shelters');
+    }
     return res.data;
   } catch (err) {
     console.warn('Backend shelter creation failed, using local persistence:', err.message);
@@ -397,6 +412,9 @@ export async function submitShelter(formData) {
 export async function getDistressRequests(params = {}) {
   try {
     const res = await api.get('/sos', { params });
+    if (!Array.isArray(res.data)) {
+      throw new Error('Expected array from /sos');
+    }
     return res.data;
   } catch (err) {
     const local = localStorage.getItem('resq_sos_requests');
@@ -463,6 +481,9 @@ export async function getDistressRequests(params = {}) {
 export async function getSOSMetrics() {
   try {
     const res = await api.get('/sos/metrics');
+    if (!res.data || typeof res.data !== 'object' || !('totalCalls' in res.data)) {
+      throw new Error('Expected metrics object from /sos/metrics');
+    }
     return res.data;
   } catch (err) {
     return {
@@ -479,6 +500,9 @@ export async function getSOSMetrics() {
 export async function submitDistressRequest(formData) {
   try {
     const res = await api.post('/sos', formData);
+    if (!res.data || typeof res.data !== 'object' || !res.data.id) {
+      throw new Error('Expected distress request object from /sos');
+    }
     return res.data;
   } catch (err) {
     // If backend isn't up, locally calculate triage and persist to localStorage
@@ -524,6 +548,9 @@ export async function updateDistressStatus(requestId, status) {
 export async function evaluateTriage(data) {
   try {
     const res = await api.post('/triage/evaluate', data);
+    if (!res.data || typeof res.data !== 'object' || res.data.score === undefined) {
+      throw new Error('Expected triage result from /triage/evaluate');
+    }
     return res.data;
   } catch (err) {
     // Client-side heuristics
