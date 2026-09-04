@@ -38,6 +38,8 @@ class DatabaseManager:
             )
 
     def get_collection(self, name: str):
+        if not self.is_connected_to_mongo and self.client is None:
+            self.connect()
         if self.is_connected_to_mongo and self.db is not None:
             return self.db[name]
         return None

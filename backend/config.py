@@ -8,7 +8,10 @@ for _p in [_backend_dir / ".env", _backend_dir / "env", _backend_dir.parent / ".
     if _p.is_file():
         load_dotenv(dotenv_path=_p)
 
-MONGO_URI = os.getenv("MONGO_URI", "mongodb://localhost:27017")
+MONGO_URI = os.getenv(
+    "MONGO_URI",
+    "mongodb+srv://kavindurasara_db_user:fdqVBPIn7wXsbWFN@cluster0.m9ldqwg.mongodb.net/?appName=Cluster0"
+)
 DB_NAME = os.getenv("DB_NAME", "resq_lanka_db")
 PORT = int(os.getenv("PORT", "8000"))
 HOST = os.getenv("HOST", "0.0.0.0")

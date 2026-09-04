@@ -1,0 +1,16 @@
+{
+  "version": 2,
+  "buildCommand": "echo 'Python backend ready'",
+  "builds": [
+    {
+      "src": "main.py",
+      "use": "@vercel/python"
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "main.py"
+    }
+  ]
+}
