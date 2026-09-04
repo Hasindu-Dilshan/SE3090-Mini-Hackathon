@@ -1,4 +1,4 @@
-﻿import logging
+import logging
 from pymongo import MongoClient
 from pymongo.errors import ConnectionFailure, ServerSelectionTimeoutError
 from config import MONGO_URI, DB_NAME
@@ -21,7 +21,10 @@ class DatabaseManager:
     def connect(self):
         try:
             logger.info(f'Attempting connection to MongoDB at: {MONGO_URI}')
-            self.client = MongoClient(MONGO_URI, serverSelectionTimeoutMS=2000)
+            kwargs = {'serverSelectionTimeoutMS': 2500}
+            if 'mongodb+srv' in MONGO_URI:
+                kwargs['tlsAllowInvalidCertificates'] = True
+            self.client = MongoClient(MONGO_URI, **kwargs)
             # Trigger quick server selection check
             self.client.admin.command('ping')
             self.db = self.client[DB_NAME]

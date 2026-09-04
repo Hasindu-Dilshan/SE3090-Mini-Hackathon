@@ -1,4 +1,4 @@
-﻿from fastapi import APIRouter
+from fastapi import APIRouter
 from typing import Optional, List
 from database import db_manager
 
@@ -15,14 +15,14 @@ def get_shelters(
     if col is not None:
         query = {}
         if district:
-            query['district'] = {'': district, '': 'i'}
+            query['district'] = {'$regex': district, '$options': 'i'}
         if status:
-            query['status'] = {'': status, '': 'i'}
+            query['status'] = {'$regex': status, '$options': 'i'}
         if search:
-            query[''] = [
-                {'name': {'': search, '': 'i'}},
-                {'division': {'': search, '': 'i'}},
-                {'address': {'': search, '': 'i'}}
+            query['$or'] = [
+                {'name': {'$regex': search, '$options': 'i'}},
+                {'division': {'$regex': search, '$options': 'i'}},
+                {'address': {'$regex': search, '$options': 'i'}}
             ]
         return list(col.find(query, {'_id': 0}))
 

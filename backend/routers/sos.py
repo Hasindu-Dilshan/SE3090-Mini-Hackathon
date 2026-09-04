@@ -21,7 +21,7 @@ def get_distress_requests(
         if status:
             query['status'] = status
         if district:
-            query['district'] = {'': district, '': 'i'}
+            query['district'] = {'$regex': district, '$options': 'i'}
         if urgency:
             query['urgency'] = urgency
         items = list(col.find(query, {'_id': 0}).sort('triageScore', -1))
@@ -81,7 +81,7 @@ def create_distress_request(req: DistressRequestCreate):
 def update_request_status(request_id: str, update: DistressStatusUpdate):
     col = db_manager.get_collection('distress_requests')
     if col is not None:
-        result = col.update_one({'id': request_id}, {'': {'status': update.status}})
+        result = col.update_one({'id': request_id}, {'$set': {'status': update.status}})
         if result.matched_count == 0:
             raise HTTPException(status_code=404, detail='Distress request not found')
         updated = col.find_one({'id': request_id}, {'_id': 0})

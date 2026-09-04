@@ -1,4 +1,4 @@
-﻿# ResQ Lanka · Real-Time Flood Early-Warning & Emergency Relief Dispatch Platform
+# ResQ Lanka · Real-Time Flood Early-Warning & Emergency Relief Dispatch Platform
 
 > **SE3090 – Software Engineering Frameworks | Assignment 2 — Mini Hackathon (2026)**  
 > **Faculty of Computing · Sri Lanka Institute of Information Technology (SLIIT)**  
@@ -42,7 +42,7 @@ The platform provides:
 
 ## 4. Main Software Features
 
-1. **Hydrological River Basin Monitor:** Live water depth telemetry, alert thresholds, rising/falling trends, and village-level inundation warnings.
+1. **Hydrological River Basin Monitor (Dual-Mode):** Live real-time water depth and rainfall telemetry directly synced from the Sri Lanka Irrigation Department ArcGIS feed (via `rivermonitorsl.homerelieflk.org`), with seamless toggle to Southwest Monsoon crisis simulation for evaluation.
 2. **Community Distress Dispatch Board:** Searchable and filterable queue displaying incoming SOS distress calls with real-time status updates (`Pending` → `Unit En Route` → `Rescued / Safe`).
 3. **Emergency Relief Request Form:** Validated SOS reporting capturing exact GPS landmarks, Sri Lankan contact number, headcount, and vulnerability factors.
 4. **Relief Shelter & Safe Haven Directory:** Directory of temples and schools with capacity meters, contact details for relief coordinators, and needed emergency supplies.
@@ -56,6 +56,7 @@ The platform provides:
 - **Frontend:** React 18 (JavaScript / JSX), Vite, Tailwind CSS, Lucide Icons, Axios
 - **Backend:** FastAPI (Python), Pydantic v2, Uvicorn
 - **Database:** MongoDB (PyMongo & Motor async driver) with resilient embedded memory fallback store
+- **External APIs:** Sri Lanka Irrigation Department Hydrology Telemetry REST Feed (`rivermonitorsl.homerelieflk.org` / ArcGIS)
 - **Deployment Platform:** Vercel / Netlify (Frontend) & Render / Railway (Backend)
 
 ---
@@ -63,7 +64,7 @@ The platform provides:
 ## 6. AI Tools Used & Mandatory Declaration
 
 ### AI Declaration:
-> **Declaration:** "AI assistance (Antigravity & Gemini) was utilized to research Sri Lankan river basin data, generate initial UI layouts and component boilerplate, and formulate regex validation patterns. All application logic, Pydantic validation schemas, MongoDB fallback storage mechanisms, and React state management workflows were thoroughly reviewed, tested, and modified by our team. We understand and take full ownership of all submitted code."
+> **Declaration:** "AI assistance (Antigravity & Gemini) was utilized to research Sri Lankan river basin data, integrate the live rivermonitorsl Irrigation Department hydrology feed, generate initial UI layouts and component boilerplate, and formulate regex validation patterns. All application logic, Pydantic validation schemas, MongoDB fallback storage mechanisms, and React state management workflows were thoroughly reviewed, tested, and modified by our team. We understand and take full ownership of all submitted code."
 
 ---
 
@@ -72,6 +73,7 @@ The platform provides:
 | Tool | Exact Prompt | Purpose | How Output was Checked / Modified |
 | :--- | :--- | :--- | :--- |
 | **Gemini / Antigravity** | *"Generate authentic Sri Lankan hydrological stations for Kelani, Kalu, and Gin rivers with minor and major flood thresholds."* | Produce realistic local sample data for Sri Lanka. | Cross-checked against official Irrigation Department hydrological reports (Nagalagam St: 5.0m Alert, 7.0m Major; Hanwella: 7.0m Alert, 10.0m Major). |
+| **Gemini / Antigravity** | *"Integrate real-time river telemetry using rivermonitorsl.homerelieflk.org Sri Lankan API with dual-mode simulation."* | Connect real-time Sri Lankan government water levels and rainfall. | Tested direct REST queries to ArcGIS FeatureServer (`gauges_2_view`), added dual-mode toggle so examiners can verify live calm data and active flood warnings. |
 | **Gemini / Antigravity** | *"Create a Pydantic model for Sri Lankan phone number validation supporting 07X and +94 prefixes."* | Enforce strict contact number validation. | Added regex `^(\+94|0)[0-9]{9}$` and strip whitespace/hyphen filters with friendly error messaging. |
 | **Gemini / Antigravity** | *"Write a FastAPI route that evaluates emergency distress factors (water depth, infants, medical needs) to output an urgency score (0-100)."* | Implement the optional AI disaster triage feature. | Calibrated weighting logic so ceiling/rooftop floods with medical emergencies always produce a score ≥95 (Critical). |
 | **Gemini / Antigravity** | *"Build a mobile-first responsive Tailwind React component for shelter directory with capacity progress bars."* | Implement accessible emergency UI. | Replaced generic styling with custom Sri Lankan district badges, direct calling links, and occupancy percentage calculations. |

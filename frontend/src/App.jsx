@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import Navbar from './components/Navbar';
 import EmergencyTicker from './components/EmergencyTicker';
 import ProblemModal from './components/ProblemModal';
@@ -24,16 +24,18 @@ export default function App() {
 
   // Application Data States
   const [gauges, setGauges] = useState([]);
+  const [gaugeMode, setGaugeMode] = useState('simulation');
+  const [isSyncingGauges, setIsSyncingGauges] = useState(false);
   const [shelters, setShelters] = useState([]);
   const [shelterSummary, setShelterSummary] = useState({});
   const [requests, setRequests] = useState([]);
   const [metrics, setMetrics] = useState({});
   const [loading, setLoading] = useState(true);
 
-  const loadData = async () => {
+  const loadData = async (mode = gaugeMode) => {
     try {
       const [gData, sData, sSumm, rData, mData] = await Promise.all([
-        getRiverGauges(),
+        getRiverGauges({ mode }),
         getShelters(),
         getShelterSummary(),
         getDistressRequests(),
@@ -51,12 +53,25 @@ export default function App() {
     }
   };
 
+  const handleToggleGaugeMode = async (newMode) => {
+    setGaugeMode(newMode);
+    setIsSyncingGauges(true);
+    try {
+      const data = await getRiverGauges({ mode: newMode });
+      setGauges(data || []);
+    } catch (err) {
+      console.error('Failed to switch gauge mode:', err);
+    } finally {
+      setIsSyncingGauges(false);
+    }
+  };
+
   useEffect(() => {
-    loadData();
+    loadData(gaugeMode);
     // Poll updates every 30 seconds
-    const interval = setInterval(loadData, 30000);
+    const interval = setInterval(() => loadData(gaugeMode), 30000);
     return () => clearInterval(interval);
-  }, []);
+  }, [gaugeMode]);
 
   const handleRequestSubmitted = (newRequest) => {
     setRequests((prev) => [newRequest, ...prev]);
@@ -281,7 +296,12 @@ export default function App() {
         {/* TAB 2: RIVER GAUGES */}
         {activeTab === 'gauges' && (
           <div className="animate-in fade-in duration-200">
-            <RiverGaugesView gauges={gauges} />
+            <RiverGaugesView
+              gauges={gauges}
+              gaugeMode={gaugeMode}
+              onToggleMode={handleToggleGaugeMode}
+              isSyncing={isSyncingGauges}
+            />
           </div>
         )}
 

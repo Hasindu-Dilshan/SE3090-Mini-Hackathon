@@ -56,7 +56,8 @@ def evaluate_triage(req: TriageRequest):
     matched_keywords = [kw for kw in critical_keywords if kw in desc_lower]
     if matched_keywords:
         score += 10
-        reasons.append(f'High-risk keywords identified: {', '.join(matched_keywords)}')
+        kw_str = ', '.join(matched_keywords)
+        reasons.append(f'High-risk keywords identified: {kw_str}')
 
     score = min(100, max(10, score))
 
