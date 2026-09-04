@@ -1,4 +1,4 @@
-﻿import uuid
+import uuid
 from datetime import datetime, timezone
 from database import db_manager
 
@@ -212,11 +212,11 @@ def seed_database():
 
     if db_manager.is_connected_to_mongo:
         if col_gauges.count_documents({}) == 0:
-            col_gauges.insert_many(SAMPLE_GAUGES)
+            col_gauges.insert_many([dict(x) for x in SAMPLE_GAUGES])
         if col_shelters.count_documents({}) == 0:
-            col_shelters.insert_many(SAMPLE_SHELTERS)
+            col_shelters.insert_many([dict(x) for x in SAMPLE_SHELTERS])
         if col_distress.count_documents({}) == 0:
-            col_distress.insert_many(SAMPLE_DISTRESS_REQUESTS)
+            col_distress.insert_many([dict(x) for x in SAMPLE_DISTRESS_REQUESTS])
     else:
         # Seed memory store
         if not db_manager.memory_store['river_gauges']:
