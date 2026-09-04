@@ -60,6 +60,22 @@ export default function Navbar({ activeTab, setActiveTab, onOpenProblemModal }) 
                   </button>
                 );
               }
+              if (item.id === 'shelter-form') {
+                return (
+                  <button
+                    key={item.id}
+                    onClick={() => handleSelect(item.id)}
+                    className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-bold transition-all ${
+                      isActive
+                        ? 'bg-sky-600 text-white shadow-sm'
+                        : 'text-sky-800 bg-sky-50 hover:bg-sky-100 border border-sky-200'
+                    }`}
+                  >
+                    <Icon className="w-4 h-4" />
+                    + Register Camp
+                  </button>
+                );
+              }
               return (
                 <button
                   key={item.id}
@@ -87,8 +103,15 @@ export default function Navbar({ activeTab, setActiveTab, onOpenProblemModal }) 
             </button>
           </nav>
 
-          {/* Mobile hamburger */}
+          {/* Mobile header controls */}
           <div className="flex lg:hidden items-center gap-2">
+            <button
+              onClick={() => handleSelect('shelter-form')}
+              className="flex items-center gap-1 bg-sky-700 text-white text-xs font-bold px-2.5 py-1.5 rounded-md"
+              title="Register a new relief camp"
+            >
+              <Building2 className="w-3.5 h-3.5" /> + Camp
+            </button>
             <button
               onClick={() => handleSelect('sos-form')}
               className="flex items-center gap-1 bg-red-600 text-white text-xs font-bold px-3 py-1.5 rounded-md"
@@ -112,6 +135,7 @@ export default function Navbar({ activeTab, setActiveTab, onOpenProblemModal }) 
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = activeTab === item.id;
+            const isCamp = item.id === 'shelter-form';
             return (
               <button
                 key={item.id}
@@ -119,13 +143,15 @@ export default function Navbar({ activeTab, setActiveTab, onOpenProblemModal }) 
                 className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-semibold ${
                   item.highlight
                     ? 'bg-red-600 text-white'
+                    : isCamp
+                    ? 'bg-sky-50 text-sky-800 border border-sky-200'
                     : isActive
                     ? 'bg-sky-50 text-sky-700'
                     : 'text-slate-700 hover:bg-slate-50'
                 }`}
               >
                 <Icon className="w-4 h-4" />
-                {item.label}
+                {isCamp ? '+ Register New Relief Camp' : item.label}
               </button>
             );
           })}

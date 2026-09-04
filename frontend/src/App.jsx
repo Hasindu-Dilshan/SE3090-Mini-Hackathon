@@ -98,7 +98,7 @@ export default function App() {
     <div className="min-h-screen flex flex-col bg-slate-50">
       
       {/* Top breaking bulletin */}
-      <EmergencyTicker />
+      <EmergencyTicker gauges={gauges} gaugeMode={gaugeMode} />
 
       {/* Navigation Header */}
       <Navbar
