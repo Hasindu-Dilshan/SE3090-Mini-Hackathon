@@ -1,7 +1,7 @@
 ﻿from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from config import CORS_ORIGINS
+from config import CORS_ORIGINS, HOST, PORT
 from database import db_manager
 from seed import seed_database
 from routers import gauges, shelters, sos, triage
@@ -49,4 +49,4 @@ def root():
 
 if __name__ == '__main__':
     import uvicorn
-    uvicorn.run('main:app', host='0.0.0.0', port=8000, reload=True)
+    uvicorn.run('main:app', host=HOST, port=PORT)
