@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: resq-lanka-api
+    runtime: python
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: python -m uvicorn main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: MONGO_URI
+        sync: false
+      - key: DB_NAME
+        value: resq_lanka_db
+      - key: CORS_ORIGINS
+        sync: false
